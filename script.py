@@ -1,8 +1,9 @@
 import csv
 import sys
+import pandas as pd
+import numpy as np
 
-myFile = open(sys.argv[1])
-csv_f = csv.reader(myFile)
+df = pd.read_csv(sys.argv[1])
+print(df)
 
-for row in csv_f:
-    print row[2]
+print("exit successful")
