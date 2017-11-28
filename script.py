@@ -1,27 +1,30 @@
 import sys
-import pandas as pd
-from tqdm import tqdm
+import pandas
+from pandas.tools.plotting import scatter_matrix
+import matplotlib.pyplot as plt
+from sklearn import model_selection
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
 
-# Allows all 8 columns to be displayed in cli
-pd.set_option('display.height', 1000)
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 1000)
+dataset = pandas.read_csv(sys.argv[1])
+# shape
+print(dataset.shape)
 
+# head
+print(dataset.head(20))
 
-def unique_buyer(arg):
-    df = pd.read_csv(arg)
+# descriptions
+print(dataset.describe())
 
-    add = []
+# class distribution
+print(dataset.groupby('CustomerID'))
 
-    with tqdm(total=len(df.index)) as pbar:
-        for index, row in df.iterrows():
-            # print(row['UnitPrice'], row['CustomerID'])
-            if row['UnitPrice'] == 4.15:
-                add.append(row['CustomerID'])
-            pbar.update(1)
-
-    print(str(len(set(add))) + " Unique Buyers")
-
-
-unique_buyer(sys.argv[1])
+dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
+plt.show()
