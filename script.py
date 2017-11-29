@@ -51,7 +51,7 @@ def pie_distribution(listValue):
     labels = 'LOW', 'MEDIUM LOW', 'MEDIUM HIGH', 'HIGH'
     highCount = listValue.count('HIGH')
     mediumHighCount = listValue.count('MEDIUM HIGH')
-    mediumLowCount = listValue.count('MEIDUM LOW')
+    mediumLowCount = listValue.count('MEDIUM LOW')
     lowCount = listValue.count('LOW')
 
     fracs = [lowCount, mediumLowCount, mediumHighCount, highCount]
@@ -115,6 +115,7 @@ def collect(arg):
     return X
 
 def calculateY(X):
+    Y = []
     for index, x in enumerate(X):
         if x[0] < 10:
             if x[1] >= 100:
@@ -123,18 +124,20 @@ def calculateY(X):
                 Y.append('MEDIUM LOW')
             elif x[1] >= 2 and x[1] < 5:
                 Y.append('LOW')
+            else:
+                X.remove(x)
         elif x[0] >= 10 and x[0] < 50:
             if x[1] >= 30:
-                Y.append('MEDIUM HIGH')
+                Y.append('HIGH')
             elif x[1] >= 5 and x[1] < 30:
-                Y.append('MEDIUM LOW')
+                Y.append('MEDIUM HIGH')
             else:
                 Y.append('MEDIUM LOW')
         elif x[0] >= 50 and x[0] < 100:
             if x[1] >= 30:
-                Y.append('MEDIUM HIGH')
+                Y.append('HIGH')
             elif x[1] >= 5 and x[1] < 30:
-                Y.append('MEDIUM LOW')
+                Y.append('MEDIUM HIGH')
             else:
                 Y.append('MEDIUM LOW')
         else:
@@ -144,6 +147,7 @@ def calculateY(X):
                 Y.append('MEDIUM HIGH')
             else:
                 Y.append('MEDIUM LOW')
+    return Y
 
 
 # Graphs scatter plot given a 2d list with coordinates
