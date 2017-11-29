@@ -5,6 +5,8 @@ from datetime import datetime
 from sklearn import tree
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
+import numpy as np
+import numpy.random
 
 # Modify CLI Output of Data frame
 pd.set_option('display.height', 1000)
@@ -111,7 +113,7 @@ def collect(arg):
         point.append(value)
         X.append(point)
 
-    print(X)
+    #print(X)
     return X
 
 def calculateY(X):
@@ -160,6 +162,23 @@ def plot_graph(coordinateList):
     plt.savefig('graph.png')
     plt.show()
 
+
+def plot_heatmap(coordinateList):
+    x = [x[0] for x in coordinateList]
+    y = [x[1] for x in coordinateList]
+    print(type(x))
+    # Create heatmap
+    heatmap, xedges, yedges = np.histogram2d(x, y, bins=(64, 64))
+    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+    # Plot heatmap
+    plt.clf()
+    plt.title('Pythonspot.com heatmap example')
+    plt.ylabel('y')
+    plt.xlabel('x')
+    plt.imshow(heatmap, extent=extent)
+    plt.show()
+
+
 X = collect(sys.argv[1])
 Y = calculateY(X)
 
@@ -169,6 +188,10 @@ Y = calculateY(X)
 #clf = clf.fit(X, Y)
 #clf.predict([[80, 10]])
 
-pie_distribution(Y)
+#pie_distribution(Y)
 
 #plot_graph(X)
+
+
+#plot_heatmap(X)
+
