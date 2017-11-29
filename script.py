@@ -121,22 +121,22 @@ def calculateY(X):
             if x[1] >= 100:
                 Y.append('HIGH')
             elif x[1] >= 5 and x[1] < 100:
-                Y.append('MEDIUM LOW')
+                Y.append('MEDIUM HIGH')
             elif x[1] >= 2 and x[1] < 5:
-                Y.append('LOW')
+                Y.append('MEDIUM LOW')
             else:
-                X.remove(x)
+                Y.append('LOW')
         elif x[0] >= 10 and x[0] < 50:
-            if x[1] >= 30:
+            if x[1] >= 10:
                 Y.append('HIGH')
-            elif x[1] >= 5 and x[1] < 30:
+            elif x[1] >= 2 and x[1] < 10:
                 Y.append('MEDIUM HIGH')
             else:
                 Y.append('MEDIUM LOW')
         elif x[0] >= 50 and x[0] < 100:
-            if x[1] >= 30:
+            if x[1] >= 10:
                 Y.append('HIGH')
-            elif x[1] >= 5 and x[1] < 30:
+            elif x[1] >= 2 and x[1] < 10:
                 Y.append('MEDIUM HIGH')
             else:
                 Y.append('MEDIUM LOW')
@@ -171,4 +171,4 @@ Y = calculateY(X)
 
 pie_distribution(Y)
 
-plot_graph(X)
+#plot_graph(X)
