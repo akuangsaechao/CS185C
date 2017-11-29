@@ -87,8 +87,8 @@ def collect(arg):
                 quantity = []
                 quantity.append(row['Quantity'])
                 customer_quantity[row['CustomerID']] = quantity
-            if index==10000:
-                break
+            #if index==10000:
+                #break
 
     X = []
     customerTotalPrice = {}
@@ -149,10 +149,11 @@ for index, x in enumerate(X):
         else:
             Y.append('MEDIUM LOW')
 
-clf = tree.DecisionTreeClassifier()
-clf = clf.fit(X, Y)
-clf.predict([[80, 10]])
 
-pie_distribution(Y)
+
+# Decision Tree Prediction
+#clf = tree.DecisionTreeClassifier()
+#clf = clf.fit(X, Y)
+#clf.predict([[80, 10]])
 
 plot_graph(X)
