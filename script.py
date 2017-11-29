@@ -2,8 +2,6 @@ import sys
 import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
-
-import numpy as np
 from sklearn import tree
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -79,6 +77,7 @@ def collect(arg):
     customer_quantity = {}
     with tqdm(total=len(df.index)) as pbar:
         for index, row in df.iterrows():
+            pbar.update(1)
             # print(row['UnitPrice'], row['CustomerID'])
             if customer_price.has_key(row['CustomerID']):
                 price = customer_price.get(row['CustomerID'])
@@ -94,9 +93,8 @@ def collect(arg):
                 quantity = []
                 quantity.append(row['Quantity'])
                 customer_quantity[row['CustomerID']] = quantity
-            if index == 5000:
-                break
-            pbar.update(1)
+            #if index==10000:
+                #break
 
     X = []
     customerTotalPrice = {}
@@ -118,10 +116,17 @@ def collect(arg):
         point.append(customerTotalPrice.get(key))
         point.append(value)
         X.append(point)
-
-    #print(X)
     return X
 
+# Graphs scatter plot given a 2d list with coordinates
+def plot_graph(coordinateList):
+    xs = [x[0] for x in coordinateList]
+    ys = [x[1] for x in coordinateList]
+    plt.scatter(xs, ys)
+    plt.ylim(0, 2000)
+    plt.xlim(1, 5000)
+    plt.savefig('graph.png')
+    plt.show()
 
 X = collect(sys.argv[1])
 Y = []
@@ -138,10 +143,10 @@ for index, x in enumerate(X):
         else:
             Y.append('poor')
 
-clf = tree.DecisionTreeClassifier()
-clf = clf.fit(X, Y)
+# Decision Tree Prediction
+#clf = tree.DecisionTreeClassifier()
+#clf = clf.fit(X, Y)
 #clf.predict([[80, 10]])
 
-#myTest = ['Rich', 'Poor', 'Rich', 'Rich', 'Poor', 'Poor', 'Poor', 'Rich Less 50', 'Poor More 50', 'Poor More 50', 'Poor More 50', 'Poor More 50', 'Rich Less 50', 'Rich Less 50','Rich Less 50']
+plot_graph(X)
 
-#pie_distribution(myTest)
