@@ -6,6 +6,7 @@ from datetime import datetime
 import numpy as np
 from sklearn import tree
 import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
 
 # Modify CLI Output of Data frame
 pd.set_option('display.height', 1000)
@@ -22,8 +23,7 @@ def unique_buyer(arg):
 
     with tqdm(total=len(df.index)) as pbar:
         for index, row in df.iterrows():
-            # print(row['UnitPrice'], row['CustomerID'])
-            if row['UnitPrice'] == 9999999:
+            if row['UnitPrice'] == 5.0:
                 add.append(row['CustomerID'])
             pbar.update(1)
 
@@ -55,7 +55,75 @@ def pivot_product(arg):
     return table
 
 
-X = [[100, 10],[5, 50], [10, 100]]
+def pie_distribution(listValue):
+    labels = 'Rich', 'Poor More 50', 'Rich Less 50', 'Poor'
+    richCount = listValue.count('Rich')
+    poor50Count = listValue.count('Poor More 50')
+    rich50Count = listValue.count('Rich Less 50')
+    poor = listValue.count('Poor')
+
+    fracs = [richCount, poor50Count, rich50Count, poor]
+
+    the_grid = GridSpec(1, 1)
+
+    plt.subplot(the_grid[0, 0], aspect=1)
+
+    plt.pie(fracs, labels=labels, autopct='%1.1f%%', shadow=True)
+
+    plt.show()
+
+def collect(arg):
+    df = pd.read_csv(arg)
+
+    customer_price = {}
+    customer_quantity = {}
+    with tqdm(total=len(df.index)) as pbar:
+        for index, row in df.iterrows():
+            # print(row['UnitPrice'], row['CustomerID'])
+            if customer_price.has_key(row['CustomerID']):
+                price = customer_price.get(row['CustomerID'])
+                price.append(row['UnitPrice'])
+                customer_price[row['CustomerID']] = price
+                quantity = customer_quantity.get(row['CustomerID'])
+                quantity.append(row['Quantity'])
+                customer_quantity[row['CustomerID']] = quantity
+            else:
+                price = []
+                price.append(row['UnitPrice'])
+                customer_price[row['CustomerID']] = price
+                quantity = []
+                quantity.append(row['Quantity'])
+                customer_quantity[row['CustomerID']] = quantity
+            if index == 5000:
+                break
+            pbar.update(1)
+
+    X = []
+    customerTotalPrice = {}
+    for key, value in customer_price.iteritems():
+        totalPrice = 0
+        for price in value:
+            totalPrice += price
+        customerTotalPrice[key] = totalPrice
+
+    customerTotalQuantity = {}
+    for key, value in customer_quantity.iteritems():
+        totalQuantity = 0
+        for quantity in value:
+            totalQuantity += quantity
+        customerTotalQuantity[key] = totalQuantity
+
+    for key, value in customerTotalQuantity.iteritems():
+        point = []
+        point.append(customerTotalPrice.get(key))
+        point.append(value)
+        X.append(point)
+
+    #print(X)
+    return X
+
+
+X = collect(sys.argv[1])
 Y = []
 
 for index, x in enumerate(X):
@@ -72,11 +140,8 @@ for index, x in enumerate(X):
 
 clf = tree.DecisionTreeClassifier()
 clf = clf.fit(X, Y)
-#print(clf.predict([[80, 10]]))
+#clf.predict([[80, 10]])
 
-#print(csv_dataframe(sys.argv[1]))
+#myTest = ['Rich', 'Poor', 'Rich', 'Rich', 'Poor', 'Poor', 'Poor', 'Rich Less 50', 'Poor More 50', 'Poor More 50', 'Poor More 50', 'Poor More 50', 'Rich Less 50', 'Rich Less 50','Rich Less 50']
 
-print(unique_buyer(sys.argv[1]))
-
-#print(pivot_product(sys.argv[1]))
-#print_table(sys.argv[1])
+#pie_distribution(myTest)
