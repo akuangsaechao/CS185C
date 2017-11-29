@@ -2,8 +2,6 @@ import sys
 import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
-
-import numpy as np
 from sklearn import tree
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -89,6 +87,8 @@ def collect(arg):
                 quantity = []
                 quantity.append(row['Quantity'])
                 customer_quantity[row['CustomerID']] = quantity
+            #if index==10000:
+                #break
 
     X = []
     customerTotalPrice = {}
@@ -110,8 +110,6 @@ def collect(arg):
         point.append(customerTotalPrice.get(key))
         point.append(value)
         X.append(point)
-
-    #print(X)
     return X
 
 # Graphs scatter plot given a 2d list with coordinates
@@ -151,6 +149,7 @@ for index, x in enumerate(X):
         else:
             Y.append('MEDIUM LOW')
 
+<<<<<<< HEAD
 clf = tree.DecisionTreeClassifier()
 clf = clf.fit(X, Y)
 clf.predict([[80, 10]])
