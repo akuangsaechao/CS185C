@@ -14,7 +14,6 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 7)
 pd.set_option('display.width', 1000)
 
-
 # Sum of unique buyer ID
 def unique_buyer(arg):
     df = pd.read_csv(arg)
@@ -29,22 +28,18 @@ def unique_buyer(arg):
 
     return str(len(set(add))) + " Unique Buyers"
 
-
 # Print current data frame
 def print_table(arg):
     print(pd.read_csv(arg))
-
 
 # return pandas dataframe of csv
 def csv_dataframe(arg):
     return pd.read_csv(arg)
 
-
 # Converts excel float time to datetime object
 def time_converter(serial):
     seconds = (serial - 25569) * 86400.0
     return datetime.utcfromtimestamp(seconds)
-
 
 # Table where customerID are row and each column is a different product code
 # Values for the table are the quantity purchased of specified product
@@ -54,15 +49,14 @@ def pivot_product(arg):
     table = table.fillna(0)
     return table
 
-
 def pie_distribution(listValue):
-    labels = 'Rich', 'Poor More 50', 'Rich Less 50', 'Poor'
-    richCount = listValue.count('Rich')
-    poor50Count = listValue.count('Poor More 50')
-    rich50Count = listValue.count('Rich Less 50')
-    poor = listValue.count('Poor')
+    labels = 'LOW', 'MEDIUM LOW', 'MEDIUM HIGH', 'HIGH'
+    highCount = listValue.count('HIGH')
+    mediumHighCount = listValue.count('MEDIUM HIGH')
+    mediumLowCount = listValue.count('MEIDUM LOW')
+    lowCount = listValue.count('LOW')
 
-    fracs = [richCount, poor50Count, rich50Count, poor]
+    fracs = [lowCount, mediumLowCount, mediumHighCount, highCount]
 
     the_grid = GridSpec(1, 1)
 
@@ -127,21 +121,31 @@ X = collect(sys.argv[1])
 Y = []
 
 for index, x in enumerate(X):
-    if x[0] >= 50:
-        if x[1] >= 5:
-            Y.append('rich')
+    if x[0] < 100:
+        if x[1] >= 500:
+            Y.append('HIGH')
+        elif x[1] >= 100 and x[1] < 500:
+            Y.append('MEDIUM LOW')
         else:
-            Y.append('poor more 50')
+            Y.append('LOW')
+    elif x[0] >= 100 and x[0] < 500:
+        if x[1] >= 50:
+            Y.append('MEDIUM LOW')
+        else:
+            Y.append('MEDIUM HIGH')
+    elif x[0] >= 500 and x[0] < 1000:
+        if x[1] >= 25:
+            Y.append('MEDIUM HIGH')
+        else:
+            Y.append('MEDIUM LOW')
     else:
         if x[1] >= 5:
-            Y.append('rich less 50')
+            Y.append('HIGH')
         else:
-            Y.append('poor')
+            Y.append('MEDIUM LOW')
 
 clf = tree.DecisionTreeClassifier()
 clf = clf.fit(X, Y)
-#clf.predict([[80, 10]])
+clf.predict([[80, 10]])
 
-#myTest = ['Rich', 'Poor', 'Rich', 'Rich', 'Poor', 'Poor', 'Poor', 'Rich Less 50', 'Poor More 50', 'Poor More 50', 'Poor More 50', 'Poor More 50', 'Rich Less 50', 'Rich Less 50','Rich Less 50']
-
-#pie_distribution(myTest)
+pie_distribution(Y)
