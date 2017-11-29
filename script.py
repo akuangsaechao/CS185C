@@ -87,8 +87,8 @@ def collect(arg):
                 quantity = []
                 quantity.append(row['Quantity'])
                 customer_quantity[row['CustomerID']] = quantity
-            #if index==10000:
-                #break
+            if index == 50000:
+                break
 
     X = []
     customerTotalPrice = {}
@@ -110,7 +110,41 @@ def collect(arg):
         point.append(customerTotalPrice.get(key))
         point.append(value)
         X.append(point)
+
+    print(X)
     return X
+
+def calculateY(X):
+    for index, x in enumerate(X):
+        if x[0] < 10:
+            if x[1] >= 100:
+                Y.append('HIGH')
+            elif x[1] >= 5 and x[1] < 100:
+                Y.append('MEDIUM LOW')
+            elif x[1] >= 2 and x[1] < 5:
+                Y.append('LOW')
+        elif x[0] >= 10 and x[0] < 50:
+            if x[1] >= 30:
+                Y.append('MEDIUM HIGH')
+            elif x[1] >= 5 and x[1] < 30:
+                Y.append('MEDIUM LOW')
+            else:
+                Y.append('MEDIUM LOW')
+        elif x[0] >= 50 and x[0] < 100:
+            if x[1] >= 30:
+                Y.append('MEDIUM HIGH')
+            elif x[1] >= 5 and x[1] < 30:
+                Y.append('MEDIUM LOW')
+            else:
+                Y.append('MEDIUM LOW')
+        else:
+            if x[1] >= 5:
+                Y.append('HIGH')
+            elif x[1] >= 2 and x[1] < 5:
+                Y.append('MEDIUM HIGH')
+            else:
+                Y.append('MEDIUM LOW')
+
 
 # Graphs scatter plot given a 2d list with coordinates
 def plot_graph(coordinateList):
@@ -123,37 +157,14 @@ def plot_graph(coordinateList):
     plt.show()
 
 X = collect(sys.argv[1])
-Y = []
-
-for index, x in enumerate(X):
-    if x[0] < 100:
-        if x[1] >= 500:
-            Y.append('HIGH')
-        elif x[1] >= 100 and x[1] < 500:
-            Y.append('MEDIUM LOW')
-        else:
-            Y.append('LOW')
-    elif x[0] >= 100 and x[0] < 500:
-        if x[1] >= 50:
-            Y.append('MEDIUM LOW')
-        else:
-            Y.append('MEDIUM HIGH')
-    elif x[0] >= 500 and x[0] < 1000:
-        if x[1] >= 25:
-            Y.append('MEDIUM HIGH')
-        else:
-            Y.append('MEDIUM LOW')
-    else:
-        if x[1] >= 5:
-            Y.append('HIGH')
-        else:
-            Y.append('MEDIUM LOW')
-
+Y = calculateY(X)
 
 
 # Decision Tree Prediction
 #clf = tree.DecisionTreeClassifier()
 #clf = clf.fit(X, Y)
 #clf.predict([[80, 10]])
+
+pie_distribution(Y)
 
 plot_graph(X)
