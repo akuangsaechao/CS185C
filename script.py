@@ -74,9 +74,7 @@ def collect(arg):
     with tqdm(total=len(df.index)) as pbar:
         for index, row in df.iterrows():
             pbar.update(1)
-            # print(row['UnitPrice'], row['CustomerID'])
-<<<<<<< HEAD
-            if row['UnitPrice'] > 0 and row['Quantity'] > 0:
+            if row['UnitPrice'] > 0 and row['Quantity'] > 0 and row['CustomerID'] > 0:
                 if customer_price.has_key(row['CustomerID']):
                     price = customer_price.get(row['CustomerID'])
                     price.append(row['UnitPrice'])
@@ -91,26 +89,8 @@ def collect(arg):
                     quantity = []
                     quantity.append(row['Quantity'])
                     customer_quantity[row['CustomerID']] = quantity
-                if index == 54000:
-                    break
-=======
-            if customer_price.has_key(row['CustomerID']):
-                price = customer_price.get(row['CustomerID'])
-                price.append(row['UnitPrice'])
-                customer_price[row['CustomerID']] = price
-                quantity = customer_quantity.get(row['CustomerID'])
-                quantity.append(row['Quantity'])
-                customer_quantity[row['CustomerID']] = quantity
-            else:
-                price = []
-                price.append(row['UnitPrice'])
-                customer_price[row['CustomerID']] = price
-                quantity = []
-                quantity.append(row['Quantity'])
-                customer_quantity[row['CustomerID']] = quantity
-            if index == 100000:
+            if index == 54000:
                 break
->>>>>>> d86e708103f335ebc0e52cb1e947be0ff2a9246b
 
     X = []
     customerTotalPrice = {}
@@ -139,34 +119,43 @@ def collect(arg):
 def calculateY(X):
     Y = []
     for index, x in enumerate(X):
-        if x[0] < 5:
-            if x[1] >= 5:
+        if x[0] < 25:
+            if x[1] >= 1000:
                 Y.append('HIGH')
-            elif x[1] >= 3 and x[1] < 5:
+            elif x[1] >= 500 and x[1] < 1000:
                 Y.append('MEDIUM HIGH')
-            elif x[1] >= 2 and x[1] < 3:
+            elif x[1] >= 100 and x[1] < 500:
                 Y.append('MEDIUM LOW')
             else:
                 Y.append('LOW')
-        elif x[0] >= 5 and x[0] < 10:
-            if x[1] >= 5:
+        elif x[0] >= 25 and x[0] < 100:
+            if x[1] >= 500:
                 Y.append('HIGH')
-            elif x[1] >= 2 and x[1] < 5:
+            elif x[1] >= 250 and x[1] < 500:
                 Y.append('MEDIUM HIGH')
-            else:
+            elif x[1] >= 100 and x[1] < 250:
                 Y.append('MEDIUM LOW')
-        elif x[0] >= 10 and x[0] < 25:
-            if x[1] >= 3:
+            else:
+                Y.append('LOW')
+        elif x[0] >= 100 and x[0] < 500:
+            if x[1] >= 250:
                 Y.append('HIGH')
-            elif x[1] >= 2 and x[1] < 3:
+            elif x[1] >= 200 and x[1] < 250:
                 Y.append('MEDIUM HIGH')
-            else:
+            elif x[1] >= 100 and x[1] < 200:
                 Y.append('MEDIUM LOW')
+            else:
+                Y.append('LOW')
         else:
-            if x[1] >= 2:
+            if x[1] >= 50:
                 Y.append('HIGH')
-            else:
+            elif x[1] >= 25 and x[1] < 50:
                 Y.append('MEDIUM HIGH')
+            elif x[1] >= 10 and x[1] < 25:
+                Y.append('MEDIUM LOW')
+            else:
+                Y.append('LOW')
+
     return Y
 
 
@@ -193,7 +182,7 @@ def plot_graph(coordinateList):
 
 
 X = collect(sys.argv[1])
-#Y = calculateY(X)
+Y = calculateY(X)
 
 
 # Decision Tree Prediction
@@ -203,11 +192,8 @@ X = collect(sys.argv[1])
 
 pie_distribution(Y)
 
-<<<<<<< HEAD
 #plot_graph(X)
 
 
 #plot_heatmap(X)
-=======
 plot_graph(X)
->>>>>>> d86e708103f335ebc0e52cb1e947be0ff2a9246b
