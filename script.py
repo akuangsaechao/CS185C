@@ -75,6 +75,7 @@ def collect(arg):
         for index, row in df.iterrows():
             pbar.update(1)
             # print(row['UnitPrice'], row['CustomerID'])
+<<<<<<< HEAD
             if row['UnitPrice'] > 0 and row['Quantity'] > 0:
                 if customer_price.has_key(row['CustomerID']):
                     price = customer_price.get(row['CustomerID'])
@@ -92,6 +93,24 @@ def collect(arg):
                     customer_quantity[row['CustomerID']] = quantity
                 if index == 54000:
                     break
+=======
+            if customer_price.has_key(row['CustomerID']):
+                price = customer_price.get(row['CustomerID'])
+                price.append(row['UnitPrice'])
+                customer_price[row['CustomerID']] = price
+                quantity = customer_quantity.get(row['CustomerID'])
+                quantity.append(row['Quantity'])
+                customer_quantity[row['CustomerID']] = quantity
+            else:
+                price = []
+                price.append(row['UnitPrice'])
+                customer_price[row['CustomerID']] = price
+                quantity = []
+                quantity.append(row['Quantity'])
+                customer_quantity[row['CustomerID']] = quantity
+            if index == 100000:
+                break
+>>>>>>> d86e708103f335ebc0e52cb1e947be0ff2a9246b
 
     X = []
     customerTotalPrice = {}
@@ -155,31 +174,26 @@ def calculateY(X):
 def plot_graph(coordinateList):
     xs = [x[0] for x in coordinateList]
     ys = [x[1] for x in coordinateList]
+
+    for index, val in enumerate(xs):
+        if val>2000:
+            xs.pop(index)
+            ys.pop(index)
+
+    for index, val in enumerate(ys):
+        if val>15000:
+            xs.pop(index)
+            ys.pop(index)
+
     plt.scatter(xs, ys)
-    plt.ylim(0, 2000)
-    plt.xlim(1, 5000)
-    plt.savefig('graph.png')
-    plt.show()
-
-
-def plot_heatmap(coordinateList):
-    x = [x[0] for x in coordinateList]
-    y = [x[1] for x in coordinateList]
-    print(type(x))
-    # Create heatmap
-    heatmap, xedges, yedges = np.histogram2d(x, y, bins=(64, 64))
-    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-    # Plot heatmap
-    plt.clf()
-    plt.title('Pythonspot.com heatmap example')
-    plt.ylabel('y')
-    plt.xlabel('x')
-    plt.imshow(heatmap, extent=extent)
+    plt.ylim(0, max(ys))
+    plt.xlim(1, max(xs))
+    #plt.savefig('graph.png')
     plt.show()
 
 
 X = collect(sys.argv[1])
-Y = calculateY(X)
+#Y = calculateY(X)
 
 
 # Decision Tree Prediction
@@ -189,7 +203,11 @@ Y = calculateY(X)
 
 pie_distribution(Y)
 
+<<<<<<< HEAD
 #plot_graph(X)
 
 
 #plot_heatmap(X)
+=======
+plot_graph(X)
+>>>>>>> d86e708103f335ebc0e52cb1e947be0ff2a9246b
