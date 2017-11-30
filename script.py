@@ -89,7 +89,7 @@ def collect(arg):
                 quantity = []
                 quantity.append(row['Quantity'])
                 customer_quantity[row['CustomerID']] = quantity
-            if index == 50000:
+            if index == 100000:
                 break
 
     X = []
@@ -156,31 +156,26 @@ def calculateY(X):
 def plot_graph(coordinateList):
     xs = [x[0] for x in coordinateList]
     ys = [x[1] for x in coordinateList]
+
+    for index, val in enumerate(xs):
+        if val>2000:
+            xs.pop(index)
+            ys.pop(index)
+
+    for index, val in enumerate(ys):
+        if val>15000:
+            xs.pop(index)
+            ys.pop(index)
+
     plt.scatter(xs, ys)
-    plt.ylim(0, 2000)
-    plt.xlim(1, 5000)
-    plt.savefig('graph.png')
-    plt.show()
-
-
-def plot_heatmap(coordinateList):
-    x = [x[0] for x in coordinateList]
-    y = [x[1] for x in coordinateList]
-    print(type(x))
-    # Create heatmap
-    heatmap, xedges, yedges = np.histogram2d(x, y, bins=(64, 64))
-    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-    # Plot heatmap
-    plt.clf()
-    plt.title('Pythonspot.com heatmap example')
-    plt.ylabel('y')
-    plt.xlabel('x')
-    plt.imshow(heatmap, extent=extent)
+    plt.ylim(0, max(ys))
+    plt.xlim(1, max(xs))
+    #plt.savefig('graph.png')
     plt.show()
 
 
 X = collect(sys.argv[1])
-Y = calculateY(X)
+#Y = calculateY(X)
 
 
 # Decision Tree Prediction
@@ -190,8 +185,4 @@ Y = calculateY(X)
 
 #pie_distribution(Y)
 
-#plot_graph(X)
-
-
-#plot_heatmap(X)
-
+plot_graph(X)
