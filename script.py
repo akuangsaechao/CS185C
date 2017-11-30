@@ -75,22 +75,23 @@ def collect(arg):
         for index, row in df.iterrows():
             pbar.update(1)
             # print(row['UnitPrice'], row['CustomerID'])
-            if customer_price.has_key(row['CustomerID']):
-                price = customer_price.get(row['CustomerID'])
-                price.append(row['UnitPrice'])
-                customer_price[row['CustomerID']] = price
-                quantity = customer_quantity.get(row['CustomerID'])
-                quantity.append(row['Quantity'])
-                customer_quantity[row['CustomerID']] = quantity
-            else:
-                price = []
-                price.append(row['UnitPrice'])
-                customer_price[row['CustomerID']] = price
-                quantity = []
-                quantity.append(row['Quantity'])
-                customer_quantity[row['CustomerID']] = quantity
-            if index == 50000:
-                break
+            if row['UnitPrice'] > 0 and row['Quantity'] > 0:
+                if customer_price.has_key(row['CustomerID']):
+                    price = customer_price.get(row['CustomerID'])
+                    price.append(row['UnitPrice'])
+                    customer_price[row['CustomerID']] = price
+                    quantity = customer_quantity.get(row['CustomerID'])
+                    quantity.append(row['Quantity'])
+                    customer_quantity[row['CustomerID']] = quantity
+                else:
+                    price = []
+                    price.append(row['UnitPrice'])
+                    customer_price[row['CustomerID']] = price
+                    quantity = []
+                    quantity.append(row['Quantity'])
+                    customer_quantity[row['CustomerID']] = quantity
+                if index == 54000:
+                    break
 
     X = []
     customerTotalPrice = {}
@@ -113,42 +114,40 @@ def collect(arg):
         point.append(value)
         X.append(point)
 
-    #print(X)
+    print(X)
     return X
 
 def calculateY(X):
     Y = []
     for index, x in enumerate(X):
-        if x[0] < 10:
-            if x[1] >= 100:
+        if x[0] < 5:
+            if x[1] >= 5:
                 Y.append('HIGH')
-            elif x[1] >= 5 and x[1] < 100:
+            elif x[1] >= 3 and x[1] < 5:
                 Y.append('MEDIUM HIGH')
-            elif x[1] >= 2 and x[1] < 5:
+            elif x[1] >= 2 and x[1] < 3:
                 Y.append('MEDIUM LOW')
             else:
                 Y.append('LOW')
-        elif x[0] >= 10 and x[0] < 50:
-            if x[1] >= 10:
-                Y.append('HIGH')
-            elif x[1] >= 2 and x[1] < 10:
-                Y.append('MEDIUM HIGH')
-            else:
-                Y.append('MEDIUM LOW')
-        elif x[0] >= 50 and x[0] < 100:
-            if x[1] >= 10:
-                Y.append('HIGH')
-            elif x[1] >= 2 and x[1] < 10:
-                Y.append('MEDIUM HIGH')
-            else:
-                Y.append('MEDIUM LOW')
-        else:
+        elif x[0] >= 5 and x[0] < 10:
             if x[1] >= 5:
                 Y.append('HIGH')
             elif x[1] >= 2 and x[1] < 5:
                 Y.append('MEDIUM HIGH')
             else:
                 Y.append('MEDIUM LOW')
+        elif x[0] >= 10 and x[0] < 25:
+            if x[1] >= 3:
+                Y.append('HIGH')
+            elif x[1] >= 2 and x[1] < 3:
+                Y.append('MEDIUM HIGH')
+            else:
+                Y.append('MEDIUM LOW')
+        else:
+            if x[1] >= 2:
+                Y.append('HIGH')
+            else:
+                Y.append('MEDIUM HIGH')
     return Y
 
 
@@ -188,10 +187,9 @@ Y = calculateY(X)
 #clf = clf.fit(X, Y)
 #clf.predict([[80, 10]])
 
-#pie_distribution(Y)
+pie_distribution(Y)
 
 #plot_graph(X)
 
 
 #plot_heatmap(X)
-
