@@ -14,6 +14,7 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 10)
 pd.set_option('display.width', 1000)
 
+
 # Sum of unique buyer ID
 def unique_buyer(arg):
     df = pd.read_csv(arg)
@@ -32,14 +33,17 @@ def unique_buyer(arg):
 def print_table(arg):
     print(pd.read_csv(arg))
 
+
 # return pandas dataframe of csv
 def csv_dataframe(arg):
     return pd.read_csv(arg)
+
 
 # Converts excel float time to datetime object
 def time_converter(serial):
     seconds = (serial - 25569) * 86400.0
     return datetime.utcfromtimestamp(seconds)
+
 
 # Table where customerID are row and each column is a different product code
 # Values for the table are the quantity purchased of specified product
@@ -48,6 +52,7 @@ def pivot_product(arg):
     table = df.pivot_table(index=["CustomerID"], columns=["UnitPrice"], values="Quantity")
     table = table.fillna(0)
     return table
+
 
 def pie_distribution(listValue):
     labels = 'LOW', 'MEDIUM LOW', 'MEDIUM HIGH', 'HIGH'
@@ -90,7 +95,7 @@ def collect(arg):
                     quantity = []
                     quantity.append(row['Quantity'])
                     customer_quantity[row['CustomerID']] = quantity
-            #if index == 400000:
+            #if index == 4000:
                 #break
 
     X = []
@@ -117,10 +122,29 @@ def collect(arg):
     #print(X)
     return X
 
+
 def calculateY(X):
     Y = []
     for index, x in enumerate(X):
-        if x[0] < 25:
+        if x[0] < 125:
+            if x[1] >= 1500:
+                Y.append('HIGH')
+            elif x[1] >= 1000 and x[1] < 1500:
+                Y.append('MEDIUM HIGH')
+            elif x[1] >= 500 and x[1] < 1000:
+                Y.append('MEDIUM LOW')
+            else:
+                Y.append('LOW')
+        elif x[0] >= 125 and x[0] < 250:
+            if x[1] >= 1250:
+                Y.append('HIGH')
+            elif x[1] >= 750 and x[1] < 1250:
+                Y.append('MEDIUM HIGH')
+            elif x[1] >= 250 and x[1] < 750:
+                Y.append('MEDIUM LOW')
+            else:
+                Y.append('LOW')
+        elif x[0] >= 375 and x[0] < 500:
             if x[1] >= 1000:
                 Y.append('HIGH')
             elif x[1] >= 500 and x[1] < 1000:
@@ -129,30 +153,12 @@ def calculateY(X):
                 Y.append('MEDIUM LOW')
             else:
                 Y.append('LOW')
-        elif x[0] >= 25 and x[0] < 100:
-            if x[1] >= 500:
-                Y.append('HIGH')
-            elif x[1] >= 250 and x[1] < 500:
-                Y.append('MEDIUM HIGH')
-            elif x[1] >= 100 and x[1] < 250:
-                Y.append('MEDIUM LOW')
-            else:
-                Y.append('LOW')
-        elif x[0] >= 100 and x[0] < 500:
-            if x[1] >= 250:
-                Y.append('HIGH')
-            elif x[1] >= 200 and x[1] < 250:
-                Y.append('MEDIUM HIGH')
-            elif x[1] >= 100 and x[1] < 200:
-                Y.append('MEDIUM LOW')
-            else:
-                Y.append('LOW')
         else:
-            if x[1] >= 50:
+            if x[1] >= 750:
                 Y.append('HIGH')
-            elif x[1] >= 25 and x[1] < 50:
+            elif x[1] >= 500 and x[1] < 750:
                 Y.append('MEDIUM HIGH')
-            elif x[1] >= 10 and x[1] < 25:
+            elif x[1] >= 250 and x[1] < 500:
                 Y.append('MEDIUM LOW')
             else:
                 Y.append('LOW')
@@ -161,30 +167,42 @@ def calculateY(X):
 
 
 # Graphs scatter plot given a 2d list with coordinates
-def plot_graph(coordinateList):
+def plot_graph(coordinateList, valueList):
     xs = [x[0] for x in coordinateList]
     ys = [x[1] for x in coordinateList]
-    randomcolor = np.random.random(len(xs))
+    colors = []
 
-    plt.scatter(xs, ys, c=randomcolor)
+    for vals in valueList:
+        if vals == 'HIGH':
+            colors.append('#ff0000')
+        if vals == 'MEDIUM HIGH':
+            colors.append('#ff8c00')
+        if vals == 'MEDIUM LOW':
+            colors.append('#0072ff')
+        if vals == 'LOW':
+            colors.append('#2d008e')
+
+    plt.scatter(xs, ys, c=colors)
     #plt.ylim(0, max(ys))
     #plt.xlim(0, max(xs))
     plt.ylim(0, 2000)
     plt.xlim(0, 600)
-    plt.savefig('graph.eps', format='eps', dpi=1000)
+    plt.savefig('graph.png', dpi=600)
     plt.show()
 
 
-
-#X = collect(sys.argv[1])
-#Y = calculateY(X)
+X = collect(sys.argv[1])
+Y = calculateY(X)
 
 
 # Decision Tree Prediction
-#clf = tree.DecisionTreeClassifier()
-#clf = clf.fit(X, Y)
-#clf.predict([[80, 10]])
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(X, Y)
+print(clf.predict([50, 1800]))
+print(clf.predict([50, 1300]))
+print(clf.predict([50, 800]))
+print(clf.predict([50, 300]))
 
 #pie_distribution(Y)
 
-#plot_graph(X)
+#plot_graph(X, Y)
