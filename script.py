@@ -11,7 +11,7 @@ import numpy.random
 # Modify CLI Output of Data frame
 pd.set_option('display.height', 1000)
 pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 7)
+pd.set_option('display.max_columns', 10)
 pd.set_option('display.width', 1000)
 
 # Sum of unique buyer ID
@@ -66,12 +66,13 @@ def pie_distribution(listValue):
 
     plt.show()
 
+
 def collect(arg):
     df = pd.read_csv(arg)
 
     customer_price = {}
     customer_quantity = {}
-    with tqdm(total=len(df.index)) as pbar:
+    with tqdm(total=len(df.index), desc="Populating Coordinate List") as pbar:
         for index, row in df.iterrows():
             pbar.update(1)
             if row['UnitPrice'] > 0 and row['Quantity'] > 0 and row['CustomerID'] > 0:
@@ -89,8 +90,8 @@ def collect(arg):
                     quantity = []
                     quantity.append(row['Quantity'])
                     customer_quantity[row['CustomerID']] = quantity
-            if index == 54000:
-                break
+            #if index == 400000:
+                #break
 
     X = []
     customerTotalPrice = {}
@@ -113,7 +114,7 @@ def collect(arg):
         point.append(value)
         X.append(point)
 
-    print(X)
+    #print(X)
     return X
 
 def calculateY(X):
@@ -163,26 +164,20 @@ def calculateY(X):
 def plot_graph(coordinateList):
     xs = [x[0] for x in coordinateList]
     ys = [x[1] for x in coordinateList]
+    randomcolor = np.random.random(len(xs))
 
-    for index, val in enumerate(xs):
-        if val>2000:
-            xs.pop(index)
-            ys.pop(index)
-
-    for index, val in enumerate(ys):
-        if val>15000:
-            xs.pop(index)
-            ys.pop(index)
-
-    plt.scatter(xs, ys)
-    plt.ylim(0, max(ys))
-    plt.xlim(1, max(xs))
-    #plt.savefig('graph.png')
+    plt.scatter(xs, ys, c=randomcolor)
+    #plt.ylim(0, max(ys))
+    #plt.xlim(0, max(xs))
+    plt.ylim(0, 2000)
+    plt.xlim(0, 600)
+    plt.savefig('graph.eps', format='eps', dpi=1000)
     plt.show()
 
 
-X = collect(sys.argv[1])
-Y = calculateY(X)
+
+#X = collect(sys.argv[1])
+#Y = calculateY(X)
 
 
 # Decision Tree Prediction
@@ -190,10 +185,6 @@ Y = calculateY(X)
 #clf = clf.fit(X, Y)
 #clf.predict([[80, 10]])
 
-pie_distribution(Y)
+#pie_distribution(Y)
 
 #plot_graph(X)
-
-
-#plot_heatmap(X)
-plot_graph(X)
