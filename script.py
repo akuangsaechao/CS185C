@@ -5,8 +5,7 @@ from datetime import datetime
 from sklearn import tree
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
-import numpy as np
-import numpy.random
+from PIL import Image
 
 # Modify CLI Output of Data frame
 pd.set_option('display.height', 1000)
@@ -95,8 +94,8 @@ def collect(arg):
                     quantity = []
                     quantity.append(row['Quantity'])
                     customer_quantity[row['CustomerID']] = quantity
-            #if index == 4000:
-                #break
+            if index == 150000:
+                break
 
     X = []
     customerTotalPrice = {}
@@ -166,6 +165,20 @@ def calculateY(X):
     return Y
 
 
+def check_valueColor(inList):
+    colors = []
+    for vals in inList:
+        if vals == 'HIGH':
+            colors.append('#ff0000')
+        if vals == 'MEDIUM HIGH':
+            colors.append('#ff8c00')
+        if vals == 'MEDIUM LOW':
+            colors.append('#0072ff')
+        if vals == 'LOW':
+            colors.append('#2d008e')
+    return colors
+
+
 # Graphs scatter plot given a 2d list with coordinates
 def plot_graph(coordinateList, valueList):
     xs = [x[0] for x in coordinateList]
@@ -181,28 +194,62 @@ def plot_graph(coordinateList, valueList):
             colors.append('#0072ff')
         if vals == 'LOW':
             colors.append('#2d008e')
+        # if vals == "['HIGH']":
+        #     colors.append('#ff0000')
+        # if vals == 'MEDIUM HIGH':
+        #     colors.append('#ff8c00')
+        # if vals == 'MEDIUM LOW':
+        #     colors.append('#0072ff')
+        # if vals == 'LOW':
+        #     colors.append('#2d008e')
 
     plt.scatter(xs, ys, c=colors)
     #plt.ylim(0, max(ys))
     #plt.xlim(0, max(xs))
-    plt.ylim(0, 2000)
-    plt.xlim(0, 600)
-    plt.savefig('graph.png', dpi=600)
-    plt.show()
+    plt.ylim(0, 2500)
+    plt.xlim(0, 1000)
+    plt.savefig('graph.png', dpi=300)
+    return True
 
 
 X = collect(sys.argv[1])
 Y = calculateY(X)
 
-
-# Decision Tree Prediction
 clf = tree.DecisionTreeClassifier()
 clf = clf.fit(X, Y)
-print(clf.predict([50, 1800]))
-print(clf.predict([50, 1300]))
-print(clf.predict([50, 800]))
-print(clf.predict([50, 300]))
+plot_graph(X, Y)
 
-#pie_distribution(Y)
+try:
+    img = Image.open('graph.png')
+    img.show()
+    while True:
+        amount = raw_input('Total Amount Spent: ')
+        if amount == 'exit':
+            break
+        while amount.isdigit() != True:
+            amount = raw_input('Total Amount Spent (INT ONLY): ')
+            if amount == 'exit':
+                break
 
-#plot_graph(X, Y)
+        quantity = raw_input('Quantity Purchased: ')
+        if quantity == 'exit':
+            break
+        while quantity.isdigit() != True:
+            quantity = raw_input('Quantity Purchased (INT ONLY): ')
+            if quantity == 'exit':
+                break
+
+        predList = [amount, quantity]
+        pred = clf.predict([[amount, quantity]])
+        colors = check_valueColor(pred)
+        plt.scatter(amount, quantity, s=100, c=colors)
+        plt.ylim(0, 2500)
+        plt.xlim(0, 1000)
+        plt.savefig('pred.png', dpi=300)
+        img = Image.open('pred.png')
+        img.show()
+        #plt.show()
+        print(pred)
+
+except KeyboardInterrupt:
+    pass
