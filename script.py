@@ -182,11 +182,11 @@ def plot_graph(coordinateList, valueList):
         if vals == 'LOW':
             colors.append('#2d008e')
 
-    plt.scatter(xs, ys, c=colors)
+    plt.scatter(xs, ys, c=colors, edgecolor='#000000')
     #plt.ylim(0, max(ys))
     #plt.xlim(0, max(xs))
-    plt.ylim(0, 2000)
-    plt.xlim(0, 600)
+    plt.ylim(0, 2500)
+    plt.xlim(0, 800)
     plt.savefig('graph.png', dpi=600)
     plt.show()
 
@@ -194,14 +194,15 @@ def plot_graph(coordinateList, valueList):
 X = collect(sys.argv[1])
 Y = calculateY(X)
 
+plot_graph(X,Y)
 
 # Decision Tree Prediction
-clf = tree.DecisionTreeClassifier()
-clf = clf.fit(X, Y)
-print(clf.predict([50, 1800]))
-print(clf.predict([50, 1300]))
-print(clf.predict([50, 800]))
-print(clf.predict([50, 300]))
+#clf = tree.DecisionTreeClassifier()
+#clf = clf.fit(X, Y)
+#print(clf.predict([50, 1800]))
+#print(clf.predict([50, 1300]))
+#print(clf.predict([50, 800]))
+#print(clf.predict([50, 300]))
 
 #pie_distribution(Y)
 
